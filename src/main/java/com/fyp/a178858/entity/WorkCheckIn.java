@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 
@@ -15,7 +16,7 @@ import java.time.Instant;
 @ToString
 public class WorkCheckIn extends BaseEntity {
     @Column(name = "TOTAL_WORK_HOURS", scale = 2)
-    private BigInteger totalWorkHours;
+    private BigDecimal totalWorkHours;
 
     @Column(name = "CLOCK_IN_TIME")
     private Instant clockInTime;
@@ -36,7 +37,7 @@ public class WorkCheckIn extends BaseEntity {
 
     public static final class builder {
         private Long id;
-        private BigInteger totalWorkHours;
+        private BigDecimal totalWorkHours;
         private Instant clockInTime;
         private Instant clockOutTime;
         private Boolean lateIn;
@@ -55,7 +56,7 @@ public class WorkCheckIn extends BaseEntity {
             return this;
         }
 
-        public builder withTotalWorkHours(BigInteger totalWorkHours) {
+        public builder withTotalWorkHours(BigDecimal totalWorkHours) {
             this.totalWorkHours = totalWorkHours;
             return this;
         }

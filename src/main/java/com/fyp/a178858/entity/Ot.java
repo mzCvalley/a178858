@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -20,8 +21,8 @@ public class Ot extends BaseEntity {
     @Column(name = "OT_DATE")
     private LocalDate otDate;
 
-    @Column(name = "DURATION")
-    private Integer duration;
+    @Column(name = "DURATION", scale = 1)
+    private BigDecimal duration;
 
     @Column(name = "JOB_DESC")
     private String jobDesc;
@@ -46,7 +47,7 @@ public class Ot extends BaseEntity {
     public static final class builder {
         private Long id;
         private LocalDate otDate;
-        private Integer duration;
+        private BigDecimal duration;
         private String jobDesc;
         private OtRequestEnum requestStatus;
         private UserTypeEnum userType;
@@ -70,7 +71,7 @@ public class Ot extends BaseEntity {
             return this;
         }
 
-        public builder withDuration(Integer duration) {
+        public builder withDuration(BigDecimal duration) {
             this.duration = duration;
             return this;
         }

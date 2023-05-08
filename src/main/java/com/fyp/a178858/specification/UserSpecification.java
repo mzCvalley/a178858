@@ -7,7 +7,13 @@ import org.springframework.data.jpa.domain.Specification;
 
 public interface UserSpecification extends Specification<User> {
 
-    static Specification<User> hasUsername(String username) {
+    private static Specification<User> hasId(Long id) {
+        return (root, query, criteriaBuilder) -> {
+            return criteriaBuilder.equal(root.get("id"), id);
+        };
+    }
+
+    private static Specification<User> hasUsername(String username) {
         return (root, query, criteriaBuilder) -> {
             if(StringUtils.isEmpty(username))
                 return criteriaBuilder.conjunction();
@@ -15,7 +21,7 @@ public interface UserSpecification extends Specification<User> {
         };
     }
 
-    static Specification<User> hasPassword(String password) {
+    private static Specification<User> hasPassword(String password) {
         return (root, query, criteriaBuilder) -> {
             if(StringUtils.isEmpty(password))
                 return criteriaBuilder.conjunction();
@@ -23,8 +29,19 @@ public interface UserSpecification extends Specification<User> {
         };
     }
 
-    static Specification<User> build(UserLoginRequest request) {
-        return Specification.where(hasUsername(request.getUsername()))
-                .and(hasPassword(request.getPassword()));
+    static Specification<User> build(String username, String password) {
+
+        return Specification.where(hasUsername(username))
+                .and(hasPassword(password));
+    }
+
+    static Specification<User> buildIsExist(Object object) {
+        if(object instanceof Long)
+            return Specification.where(hasId((Long) object));
+        if(object instanceof String)
+            return Specification.where(hasUsername((String) object));
+
+        return Specification.where((root, query, criteriaBuilder) ->
+                criteriaBuilder.disjunction());
     }
 }
