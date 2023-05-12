@@ -85,7 +85,7 @@ public class OtService {
         if(OtRequestEnum.valueOf(request.getRequestAction()).equals(OtRequestEnum.COMPLETED)) {
             //Find record for today or create one if NOT FOUND
             Specification<DailySalary> salarySpec = SalarySpecification.build();
-            DailySalary todaySalary = salaryRepo.findOne(salarySpec)
+            DailySalary todaySalary = salaryRepo.findAll(salarySpec).stream().findFirst()
                     .orElseGet(() -> salaryRepo.save(DailySalary.builder.instance()
                             .withUser(otItem.getUser())
                             .withRecordDate(LocalDate.now(ZoneId.of("Asia/Kuala_Lumpur")))

@@ -36,7 +36,7 @@ public class WorkCheckInService {
     public Boolean todayClockedIn(Long id) {
         Specification<WorkCheckIn> spec = WorkCheckInSpecification.build(id);
 
-        return repository.findOne(spec).isEmpty();
+        return repository.findAll(spec).stream().findFirst().isEmpty();
     }
 
     public Boolean clockIn(Long id) {
@@ -71,7 +71,7 @@ public class WorkCheckInService {
         if(!todayClockedIn(id))
             return todayClockedIn(id);
 
-        WorkCheckIn todayCheckIn = repository.findOne(spec).orElseThrow();
+        WorkCheckIn todayCheckIn = repository.findAll(spec).stream().findFirst().orElseThrow();
 
 //        System.out.println(ZonedDateTime.now());
 
@@ -91,7 +91,7 @@ public class WorkCheckInService {
 
         //Find record for today or create one if NOT FOUND
         Specification<DailySalary> salarySpec = SalarySpecification.build();
-        DailySalary todaySalary = salaryRepo.findOne(salarySpec)
+        DailySalary todaySalary = salaryRepo.findAll(salarySpec).stream().findFirst()
                 .orElseGet(() -> salaryRepo.save(DailySalary.builder.instance()
                         .withUser(userItem)
                         .withRecordDate(LocalDate.now(ZoneId.of("Asia/Kuala_Lumpur")))
