@@ -60,6 +60,7 @@ public class UserService {
         userItem.setPhoneNumber(request.getPhoneNumber());
         userItem.setBaseSalary(request.getBaseSalary());
         userItem.setPosition(request.getPosition());
+        userItem.setPassword(request.getPassword());
 
         return repository.save(userItem);
     }

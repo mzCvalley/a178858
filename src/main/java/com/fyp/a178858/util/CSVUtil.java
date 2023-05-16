@@ -18,7 +18,7 @@ public class CSVUtil {
     public static ByteArrayInputStream salaryResponsesToCSV(List<SalaryResponse> salaryResponses) throws IOException {
         StringWriter stringWriter = new StringWriter();
         try (CSVWriter csvWriter = new CSVWriter(stringWriter, DEFAULT_SEPARATOR, DEFAULT_QUOTE, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END)) {
-            String[] headerRecord = {"ID", "Name", "Position", "OT Duration", "OT Pay", "Total Pay"};
+            String[] headerRecord = {"Employee ID", "Name", "Position", "OT Duration", "OT Pay", "Total Pay"};
             csvWriter.writeNext(headerRecord);
 
             salaryResponses.stream().map(salaryResponse -> new String[]{

@@ -12,4 +12,5 @@ public class UserProfileEditRequest implements Serializable {
     private String phoneNumber;
     private BigDecimal baseSalary;
     private String position;
+    private String password;
 }

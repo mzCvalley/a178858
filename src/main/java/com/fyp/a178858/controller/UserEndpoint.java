@@ -81,6 +81,9 @@ public class UserEndpoint {
         if (StringUtils.isEmpty(request.getPosition()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
+        if (StringUtils.isEmpty(request.getPassword()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
         return new ResponseEntity<>(this.service.editProfile(request), headers, HttpStatus.OK);
     }
 
