@@ -4,14 +4,13 @@ import com.fyp.a178858.model.response.StatListResponse;
 import com.fyp.a178858.model.response.StatResponse;
 import com.fyp.a178858.repository.DailySalaryRepo;
 import com.fyp.a178858.repository.OtRepo;
-import com.fyp.a178858.repository.UserRepo;
 import com.fyp.a178858.repository.WorkCheckInRepo;
-import com.fyp.a178858.util.ClockInUtil;
 import com.fyp.a178858.util.RuleUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.DateFormatSymbols;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -90,8 +89,9 @@ public class StatsService {
         List<Long> data = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
-        Stream.iterate(0, n -> n < 12, n -> n + 1).forEach(x -> {
-            data.add(salaryRepo.sumTotalSalaries(currentDate.minusDays(x)).longValue());
+        Stream.iterate(12, n -> n > 0, n -> n - 1).forEach(x -> {
+            BigDecimal sumSalary = salaryRepo.sumTotalSalaries(currentDate.minusDays(x));
+            data.add(sumSalary == null ? 0L : sumSalary.longValue());
             labels.add((currentDate.minusDays(x)).toString());
         });
 
