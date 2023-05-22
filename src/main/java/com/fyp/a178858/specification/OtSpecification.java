@@ -24,6 +24,11 @@ public interface OtSpecification extends Specification<Ot> {
                 criteriaBuilder.equal(root.get("requestStatus"), OtRequestEnum.PENDING);
     }
 
+    private static Specification<Ot> isApproved() {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("requestStatus"), OtRequestEnum.APPROVED);
+    }
+
     private static Specification<Ot> fromEmployee() {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("userType"), UserTypeEnum.EMPLOYEE);
@@ -53,6 +58,7 @@ public interface OtSpecification extends Specification<Ot> {
     static Specification<Ot> buildEmployer() {
 
         return Specification.where(isPending())
+                .and(isApproved())
                 .and(fromEmployee())
                 .and(ordered());
     }
