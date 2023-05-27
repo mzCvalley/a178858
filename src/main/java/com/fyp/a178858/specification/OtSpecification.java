@@ -34,6 +34,11 @@ public interface OtSpecification extends Specification<Ot> {
                 criteriaBuilder.equal(root.get("userType"), UserTypeEnum.EMPLOYEE);
     }
 
+    private static Specification<Ot> fromEmployer() {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("userType"), UserTypeEnum.EMPLOYER);
+    }
+
     private static Specification<Ot> ordered() {
         return (root, query, criteriaBuilder) -> {
             query.orderBy(criteriaBuilder.desc(root.get("otDate")),
@@ -52,13 +57,14 @@ public interface OtSpecification extends Specification<Ot> {
 
         return Specification.where(hasUser(user_id))
                 .and(isPending())
+                .and(fromEmployer())
                 .and(ordered());
     }
 
     static Specification<Ot> buildEmployer() {
 
         return Specification.where(isPending())
-                .and(isApproved())
+                .or(isApproved())
                 .and(fromEmployee())
                 .and(ordered());
     }

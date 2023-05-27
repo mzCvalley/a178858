@@ -43,7 +43,7 @@ public class WorkCheckInService {
         User userItem = userRepo.getReferenceById(id);
 
         //If user has clocked in or yet to clock out for the day, return true
-        if(todayClockedIn(id))
+        if(!todayClockedIn(id))
             return todayClockedIn(id);
 
 //        System.out.println(ZonedDateTime.now());
@@ -68,7 +68,7 @@ public class WorkCheckInService {
         Specification<WorkCheckIn> spec = WorkCheckInSpecification.build(id);
 
         //If user has clocked out or yet to clock in for the day, return true
-        if(!todayClockedIn(id))
+        if(todayClockedIn(id))
             return todayClockedIn(id);
 
         WorkCheckIn todayCheckIn = repository.findAll(spec).stream().findFirst().orElseThrow();

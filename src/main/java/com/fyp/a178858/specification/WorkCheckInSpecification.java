@@ -1,7 +1,9 @@
 package com.fyp.a178858.specification;
 
+import com.fyp.a178858.entity.User;
 import com.fyp.a178858.entity.WorkCheckIn;
 import com.fyp.a178858.util.ClockInUtil;
+import jakarta.persistence.criteria.Join;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
@@ -13,7 +15,8 @@ public interface WorkCheckInSpecification extends Specification<WorkCheckIn> {
         return (root, query, criteriaBuilder) -> {
             if(ObjectUtils.isEmpty(id))
                 return criteriaBuilder.conjunction();
-            return criteriaBuilder.equal(root.get("id"), id);
+            root.join("user");
+            return criteriaBuilder.equal(root.get("user").get("id"), id);
         };
     }
 
