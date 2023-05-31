@@ -63,9 +63,8 @@ public interface OtSpecification extends Specification<Ot> {
 
     static Specification<Ot> buildEmployer() {
 
-        return Specification.where(isPending())
+        return Specification.where(isPending().and(fromEmployee()))
                 .or(isApproved())
-                .and(fromEmployee())
                 .and(ordered());
     }
 }
