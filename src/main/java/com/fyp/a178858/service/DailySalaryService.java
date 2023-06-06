@@ -7,10 +7,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -23,11 +23,29 @@ public class DailySalaryService {
     UserRepo userRepo;
 
     public List<SalaryResponse> findAllSalaryOfCurrentMonth() {
-        return userRepo.getUsersSalaries(LocalDate.now().getMonth().getValue(), LocalDate.now().getYear());
+        return userRepo.getUsersSalaries(LocalDate.now().getMonth().getValue(), LocalDate.now().getYear()).stream().map(tuple -> {
+            Long id = tuple.get("id", Long.class);
+            String name = tuple.get("name", String.class);
+            String position = tuple.get("position", String.class);
+            BigDecimal duration = tuple.get("duration", BigDecimal.class);
+            BigDecimal totalOtPay = tuple.get("TotalOtPay", BigDecimal.class);
+            BigDecimal totalPay = tuple.get("TotalPay", BigDecimal.class);
+
+            return new SalaryResponse(id, name, position, duration, totalOtPay, totalPay);
+        }).collect(Collectors.toList());
     }
 
     public SalaryResponse findOneSalaryOfCurrentMonth(Long userId) {
         return userRepo.getUsersSalaries(LocalDate.now().getMonth().getValue(), LocalDate.now().getYear()).stream()
-                .filter(salaryResponse -> salaryResponse.getId().equals(userId)).findFirst().orElseThrow();
+                .filter(salaryResponse -> salaryResponse.get("id").equals(userId)).findFirst().map(tuple -> {
+                    Long id = tuple.get("id", Long.class);
+                    String name = tuple.get("name", String.class);
+                    String position = tuple.get("position", String.class);
+                    BigDecimal duration = tuple.get("duration", BigDecimal.class);
+                    BigDecimal totalOtPay = tuple.get("TotalOtPay", BigDecimal.class);
+                    BigDecimal totalPay = tuple.get("TotalPay", BigDecimal.class);
+
+                    return new SalaryResponse(id, name, position, duration, totalOtPay, totalPay);
+                }).orElseThrow();
     }
 }

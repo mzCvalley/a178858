@@ -1,21 +1,27 @@
 package com.fyp.a178858.repository;
 
 import com.fyp.a178858.entity.User;
-import com.fyp.a178858.model.response.SalaryResponse;
+import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
-    @Query(value = "SELECT NEW com.fyp.a178858.model.response.SalaryResponse(u.id, u.name, u.position, SUM(o.duration), SUM(ds.otPayAmount), SUM(ds.totalPayAmount)) " +
-            "FROM User u " +
-            "LEFT JOIN Ot o ON u.id = o.user.id AND MONTH(o.otDate) = :month AND YEAR(o.otDate) = :year " +
-            "JOIN DailySalary ds ON u.id = ds.user.id AND MONTH(ds.recordDate) = :month AND YEAR(ds.recordDate) = :year " +
-            "WHERE u.userType != com.fyp.a178858.enums.UserTypeEnum.EMPLOYER " +
-            "GROUP BY u.id, u.name, u.position")
-    List<SalaryResponse> getUsersSalaries(int month, int year);
+    @Query(value = "SELECT u.id, u.name, u.`position` , (ot.duration), SUM(ds.ot_pay_amount) AS TotalOtPay, " +
+            "SUM(ds.total_pay_amount) AS TotalPay " +
+            "FROM fyp_user u " +
+            "JOIN (" +
+            "SELECT employeee_user_id, SUM(o.duration) AS duration FROM fyp_ot o " +
+            "WHERE MONTH(o.ot_date) = :month AND YEAR(o.ot_date) = :year AND o.request_status = 'COMPLETED') ot " +
+            "ON u.id = ot.employeee_user_id " +
+            "JOIN fyp_daily_salary ds ON u.id = ds.employeee_user_id " +
+            "AND MONTH(ds.record_date) = :month AND YEAR(ds.record_date) = :year " +
+            "WHERE u.user_type != 'EMPLOYER' " +
+            "GROUP BY u.id, ds.ot_pay_amount, ds.total_pay_amount;", nativeQuery = true)
+    List<Tuple> getUsersSalaries(@Param("month") int month, @Param("year") int year);
 }

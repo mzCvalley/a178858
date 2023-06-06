@@ -1,6 +1,5 @@
 package com.fyp.a178858.model.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -15,7 +14,7 @@ public class SalaryResponse implements Serializable {
     private BigDecimal totalOtPay;
     private BigDecimal totalPay;
 
-    SalaryResponse(Long id, String name, String position, BigDecimal totalDuration, BigDecimal totalOtPay, BigDecimal totalPay) {
+    public SalaryResponse(Long id, String name, String position, BigDecimal totalDuration, BigDecimal totalOtPay, BigDecimal totalPay) {
         this.id = id;
         this.name = name;
         this.position = position;
