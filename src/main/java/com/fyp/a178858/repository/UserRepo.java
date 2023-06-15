@@ -15,13 +15,13 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
     @Query(value = "SELECT u.id, u.name, u.`position` , (ot.duration), SUM(ds.ot_pay_amount) AS TotalOtPay, " +
             "SUM(ds.total_pay_amount) AS TotalPay " +
             "FROM fyp_user u " +
-            "JOIN (" +
+            "LEFT JOIN (" +
             "SELECT employeee_user_id, SUM(o.duration) AS duration FROM fyp_ot o " +
             "WHERE MONTH(o.ot_date) = :month AND YEAR(o.ot_date) = :year AND o.request_status = 'COMPLETED') ot " +
             "ON u.id = ot.employeee_user_id " +
             "JOIN fyp_daily_salary ds ON u.id = ds.employeee_user_id " +
             "AND MONTH(ds.record_date) = :month AND YEAR(ds.record_date) = :year " +
             "WHERE u.user_type != 'EMPLOYER' " +
-            "GROUP BY u.id, ds.ot_pay_amount, ds.total_pay_amount;", nativeQuery = true)
+            "GROUP BY u.id;", nativeQuery = true)
     List<Tuple> getUsersSalaries(@Param("month") int month, @Param("year") int year);
 }

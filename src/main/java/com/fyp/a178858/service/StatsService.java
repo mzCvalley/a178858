@@ -89,7 +89,7 @@ public class StatsService {
         List<Long> data = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
-        Stream.iterate(12, n -> n > 0, n -> n - 1).forEach(x -> {
+        Stream.iterate(11, n -> n >= 0, n -> n - 1).forEach(x -> {
             BigDecimal sumSalary = salaryRepo.sumTotalSalaries(currentDate.minusDays(x));
             data.add(sumSalary == null ? 0L : sumSalary.longValue());
             labels.add((currentDate.minusDays(x)).toString());

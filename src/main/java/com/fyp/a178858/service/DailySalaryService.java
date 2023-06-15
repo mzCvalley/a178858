@@ -4,6 +4,7 @@ import com.fyp.a178858.model.response.SalaryResponse;
 import com.fyp.a178858.repository.DailySalaryRepo;
 import com.fyp.a178858.repository.UserRepo;
 import jakarta.transaction.Transactional;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +28,9 @@ public class DailySalaryService {
             Long id = tuple.get("id", Long.class);
             String name = tuple.get("name", String.class);
             String position = tuple.get("position", String.class);
-            BigDecimal duration = tuple.get("duration", BigDecimal.class);
-            BigDecimal totalOtPay = tuple.get("TotalOtPay", BigDecimal.class);
-            BigDecimal totalPay = tuple.get("TotalPay", BigDecimal.class);
+            BigDecimal duration = ObjectUtils.isEmpty(tuple.get("duration", BigDecimal.class)) ? BigDecimal.ZERO : tuple.get("duration", BigDecimal.class);
+            BigDecimal totalOtPay = ObjectUtils.isEmpty(tuple.get("TotalOtPay", BigDecimal.class)) ? BigDecimal.ZERO : tuple.get("TotalOtPay", BigDecimal.class);
+            BigDecimal totalPay = ObjectUtils.isEmpty(tuple.get("TotalPay", BigDecimal.class)) ? BigDecimal.ZERO : tuple.get("TotalPay", BigDecimal.class);
 
             return new SalaryResponse(id, name, position, duration, totalOtPay, totalPay);
         }).collect(Collectors.toList());
