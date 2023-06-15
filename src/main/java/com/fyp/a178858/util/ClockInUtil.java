@@ -1,5 +1,7 @@
 package com.fyp.a178858.util;
 
+import com.fyp.a178858.enums.DayTypeEnum;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.*;
@@ -33,8 +35,15 @@ public class ClockInUtil {
         return salary.divide(new BigDecimal(numWeekdays), 2, RoundingMode.HALF_UP);
     }
 
-    public static BigDecimal getOtSalary(BigDecimal dailySalary, BigDecimal otHours) {
+    public static BigDecimal getOtSalary(BigDecimal dailySalary, BigDecimal otHours, DayTypeEnum dayType) {
         BigDecimal hourlyRate = dailySalary.divide(new BigDecimal("8"), 2, RoundingMode.HALF_UP);
+
+        switch (dayType) {
+            case NORMAL -> hourlyRate = hourlyRate.multiply(new BigDecimal("1.5"));
+            case REST -> hourlyRate = hourlyRate.multiply(new BigDecimal("2"));
+            case HOLIDAY -> hourlyRate = hourlyRate.multiply(new BigDecimal("3"));
+        }
+
         return hourlyRate.multiply(otHours);
     }
 }

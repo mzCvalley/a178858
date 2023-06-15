@@ -96,7 +96,7 @@ public class OtService {
 
             //Get Daily Salary & Add to Sum
             todaySalary.setOtPayAmount(ClockInUtil.getOtSalary(ClockInUtil.getDailySalary(otItem.getUser().getBaseSalary()),
-                    otItem.getDuration()));
+                    otItem.getDuration(), otItem.getDayType()));
             todaySalary.setTotalPayAmount(todaySalary.getNormalPayAmount().add(todaySalary.getOtPayAmount()));
 
             salaryRepo.save(todaySalary);
