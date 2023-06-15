@@ -84,8 +84,8 @@ public class OtService {
         //Add to salary pay if confirmed
         if(OtRequestEnum.valueOf(request.getRequestAction()).equals(OtRequestEnum.COMPLETED)) {
             //Find record for today or create one if NOT FOUND
-            Specification<DailySalary> salarySpec = SalarySpecification.build();
-            DailySalary todaySalary = salaryRepo.findAll(salarySpec).stream().findFirst()
+            Specification<DailySalary> salarySpec = SalarySpecification.build(otItem.getUser().getId());
+            DailySalary todaySalary = salaryRepo.findOne(salarySpec)
                     .orElseGet(() -> salaryRepo.save(DailySalary.builder.instance()
                             .withUser(otItem.getUser())
                             .withRecordDate(LocalDate.now(ZoneId.of("Asia/Kuala_Lumpur")))
@@ -95,7 +95,8 @@ public class OtService {
                             .build()));
 
             //Get Daily Salary & Add to Sum
-            todaySalary.setOtPayAmount(ClockInUtil.getOtSalary(otItem.getUser().getBaseSalary(),otItem.getDuration()));
+            todaySalary.setOtPayAmount(ClockInUtil.getOtSalary(ClockInUtil.getDailySalary(otItem.getUser().getBaseSalary()),
+                    otItem.getDuration()));
             todaySalary.setTotalPayAmount(todaySalary.getNormalPayAmount().add(todaySalary.getOtPayAmount()));
 
             salaryRepo.save(todaySalary);

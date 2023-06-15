@@ -90,7 +90,7 @@ public class WorkCheckInService {
         repository.save(todayCheckIn);
 
         //Find record for today or create one if NOT FOUND
-        Specification<DailySalary> salarySpec = SalarySpecification.build();
+        Specification<DailySalary> salarySpec = SalarySpecification.build(id);
         DailySalary todaySalary = salaryRepo.findAll(salarySpec).stream().findFirst()
                 .orElseGet(() -> salaryRepo.save(DailySalary.builder.instance()
                         .withUser(userItem)

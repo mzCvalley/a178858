@@ -17,7 +17,8 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
             "FROM fyp_user u " +
             "LEFT JOIN (" +
             "SELECT employeee_user_id, SUM(o.duration) AS duration FROM fyp_ot o " +
-            "WHERE MONTH(o.ot_date) = :month AND YEAR(o.ot_date) = :year AND o.request_status = 'COMPLETED') ot " +
+            "WHERE MONTH(o.ot_date) = :month AND YEAR(o.ot_date) = :year AND o.request_status = 'COMPLETED' " +
+            "GROUP BY employeee_user_id) ot " +
             "ON u.id = ot.employeee_user_id " +
             "JOIN fyp_daily_salary ds ON u.id = ds.employeee_user_id " +
             "AND MONTH(ds.record_date) = :month AND YEAR(ds.record_date) = :year " +
