@@ -52,12 +52,11 @@ public class StatsService {
     public StatResponse getEarlyIn() {
         int currentMonth = LocalDate.now().getMonth().getValue();
         String[] monthNames = new DateFormatSymbols().getMonths();
-        Instant rule = RuleUtil.clockInTimeRule();
         List<Long> data = new ArrayList<>();
         List<String> labels = new ArrayList<>();
 
         Stream.iterate(1, n -> n <= currentMonth, n -> n + 1).forEach(x -> {
-            data.add(workCheckInRepo.countEarlyInsByMonth(x, rule));
+            data.add(workCheckInRepo.countEarlyInsByMonth(x));
             labels.add(monthNames[x-1]);
         });
 
@@ -66,8 +65,7 @@ public class StatsService {
 
     public List<StatListResponse> getEarlyInUsers() {
         int currentMonth = LocalDate.now().getMonth().getValue();
-        Instant rule = RuleUtil.clockInTimeRule();
-        return workCheckInRepo.countUsersClockedInEarlier(currentMonth, rule);
+        return workCheckInRepo.countUsersClockedInEarlier(currentMonth);
     }
 
     public StatResponse getTotalOtRequest() {

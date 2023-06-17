@@ -84,7 +84,8 @@ public class OtService {
         //Add to salary pay if confirmed
         if(OtRequestEnum.valueOf(request.getRequestAction()).equals(OtRequestEnum.COMPLETED)) {
             //Find record for today or create one if NOT FOUND
-            Specification<DailySalary> salarySpec = SalarySpecification.build(otItem.getUser().getId());
+            Specification<DailySalary> salarySpec = SalarySpecification.build(otItem.getUser().getId(),
+                    otItem.getOtDate());
             DailySalary todaySalary = salaryRepo.findOne(salarySpec)
                     .orElseGet(() -> salaryRepo.save(DailySalary.builder.instance()
                             .withUser(otItem.getUser())
