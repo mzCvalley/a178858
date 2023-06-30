@@ -1,7 +1,6 @@
 package com.fyp.a178858.specification;
 
 import com.fyp.a178858.entity.User;
-import com.fyp.a178858.model.request.UserLoginRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -29,6 +28,10 @@ public interface UserSpecification extends Specification<User> {
         };
     }
 
+    private static Specification<User> hasPosition(String position) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("position"), position);
+    }
+
     static Specification<User> build(String username, String password) {
 
         return Specification.where(hasUsername(username))
@@ -44,4 +47,11 @@ public interface UserSpecification extends Specification<User> {
         return Specification.where((root, query, criteriaBuilder) ->
                 criteriaBuilder.disjunction());
     }
+
+    static Specification<User> buildHasPosition(String position) {
+        return StringUtils.isNotEmpty(position) ?
+                Specification.where(hasPosition(position)) :
+                Specification.allOf();
+    }
+
 }

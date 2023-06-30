@@ -8,6 +8,7 @@ import com.fyp.a178858.enums.OtRequestEnum;
 import com.fyp.a178858.enums.UserTypeEnum;
 import com.fyp.a178858.model.request.OtActionRequest;
 import com.fyp.a178858.model.request.OtCreateRequest;
+import com.fyp.a178858.model.request.OtSearchRequest;
 import com.fyp.a178858.repository.DailySalaryRepo;
 import com.fyp.a178858.repository.OtRepo;
 import com.fyp.a178858.repository.UserRepo;
@@ -35,6 +36,13 @@ public class OtService {
     UserRepo userRepo;
     @Autowired
     DailySalaryRepo salaryRepo;
+
+    public List<Ot> findAll(OtSearchRequest request) {
+        Specification<Ot> spec = OtSpecification.buildBetweenDate(request);
+
+        //Return a list of OT requests between dates
+        return repository.findAll(spec);
+    }
 
     public List<Ot> findByUser(Long userId) {
         Specification<Ot> spec = OtSpecification.buildUserHistory(userId);

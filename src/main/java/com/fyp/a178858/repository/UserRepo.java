@@ -25,4 +25,7 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
             "WHERE u.user_type != 'EMPLOYER' " +
             "GROUP BY u.id;", nativeQuery = true)
     List<Tuple> getUsersSalaries(@Param("month") int month, @Param("year") int year);
+
+    @Query(value = "SELECT DISTINCT u.position FROM User u WHERE UPPER(u.position) != 'BOSS' ")
+    List<String> getPositions();
 }

@@ -22,8 +22,13 @@ public class UserService {
     @Autowired
     UserRepo repository;
 
-    public List<User> findAll() {
-        return repository.findAll();
+    public List<User> findAll(String position) {
+        Specification<User> spec = UserSpecification.buildHasPosition(position);
+        return repository.findAll(spec);
+    }
+
+    public List<String> findAllPositions() {
+        return repository.getPositions();
     }
 
     public User login(UserLoginRequest request) {

@@ -26,10 +26,17 @@ public class UserEndpoint {
     UserService service;
 
     @GetMapping
-    public ResponseEntity<List<User>> findAll() {
+    public ResponseEntity<List<User>> findAll(@RequestParam(required = false) String position) {
         HttpHeaders headers = new HttpHeaders();
 
-        return new ResponseEntity<>(this.service.findAll(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(this.service.findAll(position), headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/positions")
+    public ResponseEntity<List<String>> findAllPositions() {
+        HttpHeaders headers = new HttpHeaders();
+
+        return new ResponseEntity<>(this.service.findAllPositions(), headers, HttpStatus.OK);
     }
 
     @PostMapping(path = "/login")

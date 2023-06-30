@@ -3,6 +3,7 @@ package com.fyp.a178858.controller;
 import com.fyp.a178858.entity.Ot;
 import com.fyp.a178858.model.request.OtActionRequest;
 import com.fyp.a178858.model.request.OtCreateRequest;
+import com.fyp.a178858.model.request.OtSearchRequest;
 import com.fyp.a178858.service.OtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +20,13 @@ public class OtEndpoint {
     //Service
     @Autowired
     OtService service;
+
+    @PostMapping(path = "/search")
+    public ResponseEntity<List<Ot>> findAll(@RequestBody OtSearchRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+
+        return new ResponseEntity<>(this.service.findAll(request), headers, HttpStatus.OK);
+    }
 
     @GetMapping(path = "/{user_id}")
     public ResponseEntity<List<Ot>> findByUser(@PathVariable Long user_id) {
