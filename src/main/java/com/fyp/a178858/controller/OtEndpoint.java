@@ -1,10 +1,15 @@
 package com.fyp.a178858.controller;
 
 import com.fyp.a178858.entity.Ot;
+import com.fyp.a178858.enums.DayTypeEnum;
+import com.fyp.a178858.enums.OtRequestEnum;
+import com.fyp.a178858.enums.UserTypeEnum;
 import com.fyp.a178858.model.request.OtActionRequest;
 import com.fyp.a178858.model.request.OtCreateRequest;
 import com.fyp.a178858.model.request.OtSearchRequest;
 import com.fyp.a178858.service.OtService;
+import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,6 +37,9 @@ public class OtEndpoint {
     public ResponseEntity<List<Ot>> findByUser(@PathVariable Long user_id) {
         HttpHeaders headers = new HttpHeaders();
 
+        if(ObjectUtils.isEmpty(user_id))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
         return new ResponseEntity<>(this.service.findByUser(user_id), headers, HttpStatus.OK);
     }
 
@@ -53,12 +61,19 @@ public class OtEndpoint {
     public ResponseEntity<Boolean> requestOt(@RequestBody OtCreateRequest request) {
         HttpHeaders headers = new HttpHeaders();
 
+        if(ObjectUtils.isEmpty(request.getOtDate()) || ObjectUtils.isEmpty(request.getDuration()) || EnumUtils.isValidEnumIgnoreCase(UserTypeEnum.class, request.getRequestUserType())
+        || EnumUtils.isValidEnumIgnoreCase(DayTypeEnum.class, request.getDayType()) || ObjectUtils.isEmpty(request.getUserId()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
         return new ResponseEntity<>(this.service.requestOt(request), headers, HttpStatus.OK);
     }
 
     @PutMapping(path = "/action")
     public ResponseEntity<Boolean> actionOt(@RequestBody OtActionRequest request) {
         HttpHeaders headers = new HttpHeaders();
+
+        if(ObjectUtils.isEmpty(request.getId()) || EnumUtils.isValidEnum(OtRequestEnum.class, request.getRequestAction()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(this.service.actionOt(request), headers, HttpStatus.OK);
     }
