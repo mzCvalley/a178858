@@ -61,8 +61,8 @@ public class OtEndpoint {
     public ResponseEntity<Boolean> requestOt(@RequestBody OtCreateRequest request) {
         HttpHeaders headers = new HttpHeaders();
 
-        if(ObjectUtils.isEmpty(request.getOtDate()) || ObjectUtils.isEmpty(request.getDuration()) || EnumUtils.isValidEnumIgnoreCase(UserTypeEnum.class, request.getRequestUserType())
-        || EnumUtils.isValidEnumIgnoreCase(DayTypeEnum.class, request.getDayType()) || ObjectUtils.isEmpty(request.getUserId()))
+        if(ObjectUtils.isEmpty(request.getOtDate()) || ObjectUtils.isEmpty(request.getDuration()) || !EnumUtils.isValidEnumIgnoreCase(UserTypeEnum.class, request.getRequestUserType())
+        || !EnumUtils.isValidEnumIgnoreCase(DayTypeEnum.class, request.getDayType()) || ObjectUtils.isEmpty(request.getUserId()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(this.service.requestOt(request), headers, HttpStatus.OK);
@@ -72,7 +72,7 @@ public class OtEndpoint {
     public ResponseEntity<Boolean> actionOt(@RequestBody OtActionRequest request) {
         HttpHeaders headers = new HttpHeaders();
 
-        if(ObjectUtils.isEmpty(request.getId()) || EnumUtils.isValidEnum(OtRequestEnum.class, request.getRequestAction()))
+        if(ObjectUtils.isEmpty(request.getId()) || !EnumUtils.isValidEnumIgnoreCase(OtRequestEnum.class, request.getRequestAction()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(this.service.actionOt(request), headers, HttpStatus.OK);
