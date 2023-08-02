@@ -35,6 +35,11 @@ public class ClockInUtil {
         return salary.divide(new BigDecimal(numWeekdays), 2, RoundingMode.HALF_UP);
     }
 
+    public static BigDecimal getSalaryByHour(BigDecimal salary, BigDecimal workingHours) {
+        BigDecimal hourlyRate = getDailySalary(salary).divide(new BigDecimal("8"), 2, RoundingMode.HALF_UP);
+        return hourlyRate.multiply(workingHours).setScale(2, RoundingMode.HALF_UP);
+    }
+
     public static BigDecimal getOtSalary(BigDecimal dailySalary, BigDecimal otHours, DayTypeEnum dayType) {
         BigDecimal hourlyRate = dailySalary.divide(new BigDecimal("8"), 2, RoundingMode.HALF_UP);
 

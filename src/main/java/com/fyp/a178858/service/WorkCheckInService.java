@@ -16,10 +16,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.math.RoundingMode;
+import java.time.*;
 
 @Service
 @Transactional
@@ -46,8 +44,6 @@ public class WorkCheckInService {
         if(!todayClockedIn(id))
             return todayClockedIn(id);
 
-//        System.out.println(ZonedDateTime.now());
-
         //For Checking If Late Clock In
         Instant clockInRule = RuleUtil.clockInTimeRule();
         Instant currentInstant = ClockInUtil.getCurrentInstant();
@@ -73,15 +69,14 @@ public class WorkCheckInService {
 
         WorkCheckIn todayCheckIn = repository.findAll(spec).stream().findFirst().orElseThrow();
 
-//        System.out.println(ZonedDateTime.now());
-
         //For Checking If Late Clock Out
         Instant clockOutRule = RuleUtil.clockOutTimeRule();
         Instant currentInstant = ClockInUtil.getCurrentInstant();
 
         //Find the total working hours
         Duration duration = Duration.between(todayCheckIn.getClockInTime(), currentInstant);
-        BigDecimal totalHours = new BigDecimal(Math.max(0, duration.toHours()));
+        double decimalHours = (double) duration.toSeconds() / (60 * 60);
+        BigDecimal totalHours = new BigDecimal(decimalHours).setScale(3, RoundingMode.HALF_UP);
 
         todayCheckIn.setClockOutTime(currentInstant);
         todayCheckIn.setLateOut(currentInstant.isAfter(clockOutRule));
@@ -102,7 +97,7 @@ public class WorkCheckInService {
                         .build()));
 
         //Get Daily Salary & Add to Sum
-        todaySalary.setNormalPayAmount(ClockInUtil.getDailySalary(userItem.getBaseSalary()));
+        todaySalary.setNormalPayAmount(ClockInUtil.getSalaryByHour(userItem.getBaseSalary(), totalHours));
         todaySalary.setTotalPayAmount(todaySalary.getNormalPayAmount().add(todaySalary.getOtPayAmount()));
 
         salaryRepo.save(todaySalary);
