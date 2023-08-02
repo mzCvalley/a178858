@@ -55,7 +55,7 @@ public class UserEndpoint {
     public ResponseEntity<User> createUser(@RequestBody @Valid UserCreateRequest request) {
         HttpHeaders headers = new HttpHeaders();
 
-        if (StringUtils.isEmpty(request.getUsername()) || StringUtils.isEmpty(request.getPassword()) || !EnumUtils.isValidEnum(UserTypeEnum.class, request.getUserType().toString())
+        if (StringUtils.isEmpty(request.getUsername()) || StringUtils.isEmpty(request.getPassword()) || !EnumUtils.isValidEnumIgnoreCase(UserTypeEnum.class, request.getUserType().toString())
         || StringUtils.isEmpty(request.getName()) || StringUtils.isEmpty(request.getPhoneNumber()) || ObjectUtils.isEmpty(request.getBaseSalary()) || StringUtils.isEmpty(request.getPosition()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
