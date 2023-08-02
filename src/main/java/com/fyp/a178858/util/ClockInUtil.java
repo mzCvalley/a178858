@@ -5,6 +5,7 @@ import com.fyp.a178858.enums.DayTypeEnum;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.stream.IntStream;
 
 public class ClockInUtil {
@@ -13,11 +14,12 @@ public class ClockInUtil {
     }
 
     public static Instant getStartOfDay() {
-        return LocalDate.now().atStartOfDay().atZone(ZoneId.of("Asia/Kuala_Lumpur")).toInstant();
+        return Instant.now().atZone(ZoneId.of("Asia/Kuala_Lumpur")).truncatedTo(ChronoUnit.DAYS).toInstant();
     }
 
     public static Instant getEndOfDay() {
-        return LocalDate.now().plusDays(1).atStartOfDay().atZone(ZoneId.of("Asia/Kuala_Lumpur")).toInstant();
+        return Instant.now().atZone(ZoneId.of("Asia/Kuala_Lumpur")).truncatedTo(ChronoUnit.DAYS)
+                .plus(1,ChronoUnit.DAYS).minus(1,ChronoUnit.SECONDS).toInstant();
     }
 
     public static BigDecimal getDailySalary(BigDecimal salary) {
