@@ -21,14 +21,12 @@ public interface WorkCheckInRepo extends JpaRepository<WorkCheckIn, Long>, JpaSp
 
     @Query("SELECT COUNT(wc.clockInTime) FROM WorkCheckIn wc " +
             "WHERE MONTH(wc.clockInTime) = :month " +
-            "AND wc.clockInTime < :clockInTimeRule")
-    Long countEarlyInsByMonth(
-            @Param("month") int month,
-            @Param("clockInTimeRule") Instant clockInTimeRule);
+            "AND wc.lateIn = false ")
+    Long countEarlyInsByMonth(@Param("month") int month);
 
     @Query("SELECT new com.fyp.a178858.model.response.StatListResponse(u.name, u.phoneNumber, COUNT(wci.lateIn)) " +
             "FROM WorkCheckIn wci " +
-            "JOIN wci.user u " +
+            "JOIN User u ON wci.user.id = u.id " +
             "WHERE MONTH(wci.clockInTime) = :month " +
             "AND wci.lateIn = true " +
             "GROUP BY u.name, u.phoneNumber")
@@ -36,11 +34,10 @@ public interface WorkCheckInRepo extends JpaRepository<WorkCheckIn, Long>, JpaSp
 
     @Query("SELECT new com.fyp.a178858.model.response.StatListResponse(u.name, u.phoneNumber, COUNT(wci.clockInTime)) " +
             "FROM WorkCheckIn wci " +
-            "JOIN wci.user u " +
+            "JOIN User u ON wci.user.id = u.id " +
             "WHERE MONTH(wci.clockInTime) = :month " +
-            "AND wci.clockInTime < :instant " +
+            "AND wci.lateIn = false " +
             "GROUP BY u.name, u.phoneNumber")
-    List<StatListResponse> countUsersClockedInEarlier(@Param("month") int month,
-                                                      @Param("instant") Instant clockInTimeRule);
+    List<StatListResponse> countUsersClockedInEarlier(@Param("month") int month);
 
 }

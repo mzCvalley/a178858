@@ -25,7 +25,7 @@ public class DailySalaryEndpoint {
     DailySalaryService service;
 
     @GetMapping
-    public ResponseEntity<List<SalaryResponse>> findAllSalaryOfCurrentMonth() throws IOException {
+    public ResponseEntity<List<SalaryResponse>> findAllSalaryOfCurrentMonth() {
         HttpHeaders headers = new HttpHeaders();
 
         return new ResponseEntity<>(service.findAllSalaryOfCurrentMonth(), headers, HttpStatus.OK);

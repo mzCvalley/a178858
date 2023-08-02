@@ -4,11 +4,19 @@ import com.fyp.a178858.entity.Ot;
 import com.fyp.a178858.entity.User;
 import com.fyp.a178858.enums.OtRequestEnum;
 import com.fyp.a178858.enums.UserTypeEnum;
+import com.fyp.a178858.model.request.OtSearchRequest;
 import jakarta.persistence.criteria.Join;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDate;
+
 public interface OtSpecification extends Specification<Ot> {
+    private static Specification<Ot> isBetweenDate(LocalDate fromDate, LocalDate toDate) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.between(root.get("otDate"),fromDate,toDate);
+    }
+
     private static Specification<Ot> hasUser(Long user_id) {
         return (root, query, criteriaBuilder) -> {
             if(ObjectUtils.isEmpty(user_id))
@@ -45,6 +53,13 @@ public interface OtSpecification extends Specification<Ot> {
                     criteriaBuilder.asc(root.get("requestStatus")));
             return criteriaBuilder.conjunction();
         };
+    }
+
+    static Specification<Ot> buildBetweenDate(OtSearchRequest request) {
+        return ObjectUtils.isNotEmpty(request.getDateFrom()) && ObjectUtils.isNotEmpty(request.getDateTo()) ?
+                Specification.where(isBetweenDate(request.getDateFrom(),request.getDateTo()))
+                        .and(ordered()) :
+                Specification.allOf();
     }
 
     static Specification<Ot> buildUserHistory(Long user_id) {

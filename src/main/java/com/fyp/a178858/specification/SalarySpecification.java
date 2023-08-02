@@ -6,12 +6,11 @@ import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 
 public interface SalarySpecification extends Specification<DailySalary> {
-    private static Specification<DailySalary> isToday() {
+    private static Specification<DailySalary> isDate(LocalDate date) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("recordDate"),
-                LocalDate.now(ZoneId.of("Asia/Kuala_Lumpur")));
+                date);
     }
 
     private static Specification<DailySalary> isUser(Long userId) {
@@ -21,8 +20,8 @@ public interface SalarySpecification extends Specification<DailySalary> {
         };
     }
 
-    static Specification<DailySalary> build(Long userId) {
-        return Specification.where(isToday())
+    static Specification<DailySalary> build(Long userId, LocalDate date) {
+        return Specification.where(isDate(date))
                         .and(isUser(userId));
     }
 }
