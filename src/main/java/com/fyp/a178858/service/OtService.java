@@ -97,7 +97,7 @@ public class OtService {
             DailySalary todaySalary = salaryRepo.findOne(salarySpec)
                     .orElseGet(() -> salaryRepo.save(DailySalary.builder.instance()
                             .withUser(otItem.getUser())
-                            .withRecordDate(LocalDate.now(ZoneId.of("Asia/Kuala_Lumpur")))
+                            .withRecordDate(otItem.getOtDate())
                             .withNormalPayAmount(BigDecimal.ZERO)
                             .withOtPayAmount(BigDecimal.ZERO)
                             .withTotalPayAmount(BigDecimal.ZERO)
