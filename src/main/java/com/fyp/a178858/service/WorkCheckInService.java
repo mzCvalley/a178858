@@ -39,6 +39,7 @@ public class WorkCheckInService {
 
     public Boolean clockIn(Long id) {
         User userItem = userRepo.getReferenceById(id);
+        Specification<WorkCheckIn> spec = WorkCheckInSpecification.build(id);
 
         //If user has clocked in or yet to clock out for the day, return true
         if(!todayClockedIn(id))
@@ -48,13 +49,15 @@ public class WorkCheckInService {
         Instant clockInRule = RuleUtil.clockInTimeRule();
         Instant currentInstant = ClockInUtil.getCurrentInstant();
 
-        WorkCheckIn newCheckIn = WorkCheckIn.builder.instance()
-                .withClockInTime(currentInstant)
-                .withLateIn(currentInstant.isAfter(clockInRule))
-                .withUser(userItem)
-                .build();
+        WorkCheckIn todayCheckIn = repository.findAll(spec).stream().findFirst()
+                .orElseGet(() -> WorkCheckIn.builder.instance()
+                        .withUser(userItem)
+                        .build());
 
-        repository.save(newCheckIn);
+        todayCheckIn.setClockInTime(currentInstant);
+        todayCheckIn.setLateIn(currentInstant.isAfter(clockInRule));
+
+        repository.save(todayCheckIn);
 
         return currentInstant.isAfter(clockInRule);
     }
